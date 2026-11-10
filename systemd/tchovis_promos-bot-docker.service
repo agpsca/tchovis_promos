@@ -1,0 +1,20 @@
+[Unit]
+Description=Tchovis Promos - bot do Telegram em conteiner
+# Unidades de usuario nao podem depender de docker.service, que pertence ao
+# escopo do sistema. A prontidao do Docker e verificada no ExecStartPre.
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=@PROJECT_ROOT@
+ExecStartPre=/bin/sh -c 'i=0; while [ $i -lt 30 ]; do docker info >/dev/null 2>&1 && exit 0; i=$((i+1)); sleep 5; done; echo "Docker nao respondeu" >&2; exit 1'
+ExecStart=/usr/bin/docker compose up bot
+ExecStop=/usr/bin/docker compose stop bot
+Environment=PYTHONUNBUFFERED=1
+Restart=always
+RestartSec=30
+Nice=10
+
+[Install]
+WantedBy=default.target

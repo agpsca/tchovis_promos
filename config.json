@@ -1,0 +1,19 @@
+{
+  "project_name": "Tchovis Promos",
+  "check_interval_minutes": 30,
+  "minimum_price_drop": 50,
+  "browser_delay_seconds": 3,
+  "search_filters": {
+    "exclude": [
+      "recondicionado",
+      "usado",
+      "renewed",
+      "renovado",
+      "open box",
+      "openbox"
+    ]
+  },
+  "disabled_stores": [],
+  "products": [],
+  "searches": []
+}

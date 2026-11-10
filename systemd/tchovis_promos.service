@@ -1,0 +1,15 @@
+[Unit]
+Description=Tchovis Promos - monitor de preços
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@PROJECT_ROOT@
+ExecStart=@PROJECT_ROOT@/.venv/bin/python @PROJECT_ROOT@/watcher.py
+Environment=PYTHONUNBUFFERED=1
+Nice=10
+TimeoutStartSec=20min
+
+[Install]
+WantedBy=default.target

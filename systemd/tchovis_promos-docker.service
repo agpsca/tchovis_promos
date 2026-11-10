@@ -1,0 +1,16 @@
+[Unit]
+Description=Tchovis Promos - monitor de precos em conteiner
+# Unidades de usuario nao podem depender de docker.service, que pertence ao
+# escopo do sistema. A prontidao do Docker e verificada no ExecStartPre.
+
+[Service]
+Type=oneshot
+WorkingDirectory=@PROJECT_ROOT@
+ExecStartPre=/bin/sh -c 'i=0; while [ $i -lt 30 ]; do docker info >/dev/null 2>&1 && exit 0; i=$((i+1)); sleep 5; done; echo "Docker nao respondeu" >&2; exit 1'
+ExecStart=/usr/bin/docker compose run --rm watcher
+Environment=PYTHONUNBUFFERED=1
+TimeoutStartSec=25min
+Nice=10
+
+[Install]
+WantedBy=default.target

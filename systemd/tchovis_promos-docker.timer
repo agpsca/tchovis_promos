@@ -1,0 +1,12 @@
+[Unit]
+Description=Tchovis Promos - consulta precos a cada 30 minutos
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=30min
+RandomizedDelaySec=4min
+Persistent=true
+Unit=tchovis_promos-docker.service
+
+[Install]
+WantedBy=timers.target

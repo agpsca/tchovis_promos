@@ -1,0 +1,20 @@
+[Unit]
+Description=Tchovis Promos - bot do Telegram e coleta periodica
+Wants=network-online.target
+After=network-online.target
+# Se o processo morrer em sequencia, o systemd desiste em vez de ficar
+# reiniciando e avisando no Telegram a cada 30 segundos.
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=@PROJECT_ROOT@
+ExecStart=@PROJECT_ROOT@/.venv/bin/python @PROJECT_ROOT@/watcher.py --serve
+Environment=PYTHONUNBUFFERED=1
+Restart=always
+RestartSec=30
+Nice=10
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,38 @@
+# O nome do projeto fica explicito para nao depender do nome da pasta,
+# que e o padrao do Compose.
+name: tchovis_promos
+
+# Os dois servicos usam a mesma imagem e o mesmo volume; muda so o que o
+# processo faz. "watcher" roda uma coleta e sai; "bot" fica ouvindo.
+x-comum: &comum
+  build: .
+  image: tchovis_promos:latest
+  env_file:
+    - .env
+  # Roda com o UID do host para que o SQLite no volume fique com dono
+  # natural e legivel fora do conteiner. HOME aponta para /tmp porque
+  # esse UID nao existe no /etc/passwd da imagem.
+  user: "${TCHOVIS_UID:-1000}:${TCHOVIS_GID:-1000}"
+  environment:
+    HOME: /tmp
+    # A Magalu responde 403 para IP de datacenter. No notebook, remova
+    # esta variavel para voltar a monitorar a loja.
+    TCHOVIS_DISABLED_STORES: "${TCHOVIS_DISABLED_STORES:-magalu}"
+  volumes:
+    - ./state:/data
+  # O Firefox precisa de memoria compartilhada maior que o padrao de 64MB.
+  shm_size: "1gb"
+  init: true
+  mem_limit: 3g
+
+services:
+  watcher:
+    <<: *comum
+    container_name: tchovis_promos
+    restart: "no"
+
+  bot:
+    <<: *comum
+    container_name: tchovis_promos_bot
+    command: ["--serve"]
+    restart: unless-stopped
